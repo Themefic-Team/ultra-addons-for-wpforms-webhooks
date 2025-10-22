@@ -8,7 +8,7 @@ class FormBuilder {
     public $allowed_field_types = [];
 
     public function init() {
-        
+
         add_action( 'wpforms_form_settings_panel_content', [ $this, 'panel_content' ],   40 );
 		add_action( 'wpforms_builder_enqueues',            [ $this, 'enqueue_assets' ],  10 );
 
@@ -49,7 +49,7 @@ class FormBuilder {
 
     public function panel_sidebar( $sections, $form_data ) {
 
-		$sections['uawpf-webhooks'] = esc_html__( 'Webhooks UawPF', 'ultrawpf-webhooks' );
+		$sections['uawpf-webhooks'] = esc_html__( 'Webhooks', 'ultrawpf-webhooks' );
 
 		return $sections;
 	}

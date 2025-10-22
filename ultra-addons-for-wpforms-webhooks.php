@@ -40,7 +40,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
         $this->define_constants();
 
         add_action('init', array( $this , 'ultrawpf_webhooks_plugin_init') );
-
+		add_action( 'wpforms_loaded', array($this, 'ultrawpf_webhooks_load') );
     }
 
     /**
@@ -83,7 +83,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
         if ( is_plugin_active( 'ultra-addons-for-wpforms/ultra-addons-for-wpforms.php' ) ) {
     
             add_action( 'admin_enqueue_scripts', array($this ,'ultrawpf_webhooks_admin_scripts') );
-			add_action( 'wpforms_loaded', array($this, 'ultrawpf_webhooks_load') );
+			
         }else{
             add_action( 'admin_notices', array($this, 'ultrawpf_webhooks_addon_required') );
         }
