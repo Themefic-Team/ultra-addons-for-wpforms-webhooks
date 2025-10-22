@@ -27,12 +27,12 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
+use Themefic\UtrawpfWebhooks\Webhook;
+
 final class Ultra_Addons_For_WPForms_Webhooks {
 
 
-	const ULTRAWPF_WEBHOOKS_VERSION = '1.0.0';
-
-	const ULTRAWPF_WEBHOOKS_FILE = __FILE__;
+	const WEBHOOKS_VERSION = '1.0.0';
 
     public function __construct()
     {
@@ -66,9 +66,9 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 		 * define all necessary constants
 		 */
 
-		define( 'ULTRAWPF_WEBHOOKS_PATH', plugin_dir_path( self::ULTRAWPF_WEBHOOKS_FILE ) );
-
-		define( 'ULTRAWPF_WEBHOOKS_URL', plugin_dir_url( self::ULTRAWPF_WEBHOOKS_FILE ) );
+		define( 'ULTRAWPF_WEBHOOKS_PATH', plugin_dir_path( __FILE__ ) );
+		define( 'ULTRAWPF_WEBHOOKS_URL', plugin_dir_url( __FILE__ ) );
+		define( 'WEBHOOKS_VERSION', self::WEBHOOKS_VERSION );
 
 
     }
@@ -97,7 +97,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 
 	public function ultrawpf_webhooks_load() {
 		
-			// return Plugin::get_instance();
+		return Webhook::get_instance();
 	}
     
     /*
