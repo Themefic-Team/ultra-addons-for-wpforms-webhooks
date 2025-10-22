@@ -1,0 +1,21 @@
+{
+    "name": "themefic/utrawpf-webhooks",
+    "description": "Test description",
+    "type": "wordpress-plugin",
+    "license": "GPLv2",
+    "autoload": {
+        "psr-4": {
+            "Themefic\\UtrawpfWebhooks\\": "includes/"
+        },
+        "files": [
+            "includes/Helpers/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Jewel Hossain"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
