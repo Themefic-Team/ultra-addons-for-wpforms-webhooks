@@ -27,7 +27,7 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-use Themefic\UtrawpfWebhooks\Webhook;
+use Themefic\UtrawpfWebhooks\WebhookAddon;
 
 final class Ultra_Addons_For_WPForms_Webhooks {
 
@@ -97,7 +97,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 
 	public function ultrawpf_webhooks_load() {
 		
-		return Webhook::get_instance();
+		return WebhookAddon::get_instance();
 	}
     
     /*
