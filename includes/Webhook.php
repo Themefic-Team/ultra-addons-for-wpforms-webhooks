@@ -3,8 +3,6 @@
 namespace Themefic\UtrawpfWebhooks;
 
 use WPForms\Helpers\Crypto;
-use Themefic\UtrawpfWebhooks\Helpers\Formatting;
-use Themefic\UtrawpfWebhooks\WebhookAddon;
 
 /**
  * Class Webhook.
@@ -14,165 +12,138 @@ use Themefic\UtrawpfWebhooks\WebhookAddon;
 class Webhook {
 
 	/**
-	 * Webhook data.
-	 *
-	 * @since 1.0.0
+	 * Webhook configuration data.
 	 *
 	 * @var array
 	 */
-	protected $data = [];
+	protected $config = [];
 
 	/**
-	 * Apply encryption for custom request values.
-	 *
-	 * @since 1.0.0
+	 * Whether to encrypt secure fields.
 	 *
 	 * @var bool
 	 */
-	protected $use_encrypt = false;
+	protected $encrypt_mode = false;
 
 	/**
-	 * Constructor method.
+	 * Constructor.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $data        Webhook data.
-	 * @param bool  $use_encrypt Pass `true` if we want to encrypt custom request values.
+	 * @param array $data Optional initial data.
+	 * @param bool  $encrypt Whether to enable encryption.
 	 */
-	public function __construct( $data = [], $use_encrypt = false ) {
-
-		$this->use_encrypt = wp_validate_boolean( $use_encrypt );
+	public function __construct( $data = [], $encrypt = false ) {
+		$this->encrypt_mode = (bool) $encrypt;
 
 		if ( ! empty( $data ) && is_array( $data ) ) {
-			$this->set_data( $data );
+			$this->prepare_data( $data );
 		}
 	}
 
 	/**
-	 * Set and sanitize data.
+	 * Prepare and sanitize webhook data.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $raw_data Webhook data.
+	 * @param array $raw_data Raw webhook data.
 	 */
-	protected function set_data( $raw_data ) {
+	protected function prepare_data( $raw_data ) {
 
 		$defaults = $this->get_defaults();
 		$data     = wp_parse_args( $raw_data, $defaults );
-		$methods  = uawpf_get_available_methods();
+		$methods  = uawpf_webhook_get_available_methods();
 
-		$data['id']      = absint( $data['id'] );
-		$data['name']    = sanitize_text_field( $data['name'] );
-		$data['url']     = esc_url_raw( $data['url'] );
+		$data['id']      = absint( $data['id'] ?? 0 );
+		$data['name']    = sanitize_text_field( $data['name'] ?? '' );
+		$data['url']     = esc_url_raw( $data['url'] ?? '' );
 		$data['method']  = isset( $methods[ $data['method'] ] ) ? $data['method'] : $defaults['method'];
-		$data['headers'] = $this->set_request_params( $data['headers'] );
-		$data['body']    = $this->set_request_params( $data['body'] );
 
-		$this->data = $data;
+		$data['headers'] = $this->parse_request_params( $data['headers'] ?? [], 'header' );
+		$data['body']    = $this->parse_request_params( $data['body'] ?? [], 'body' );
+
+		$this->config = $data;
 	}
 
 	/**
-	 * Returns all data for this object.
-	 *
-	 * @since 1.0.0
+	 * Return sanitized data.
 	 *
 	 * @return array
 	 */
 	public function get_data() {
-
-		return $this->data;
+		return $this->config;
 	}
 
 	/**
-	 * Set and sanitize request parameters for header, body, etc.
+	 * Parse request parameters (headers or body).
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param array  $raw_params Request parameters.
-	 * @param string $context    Context for request parameters - header or body.
+	 * @param array  $params Parameter array.
+	 * @param string $context Context string (header|body).
 	 *
 	 * @return array
 	 */
-	protected function set_request_params( $raw_params, $context = 'header' ) {
+	protected function parse_request_params( $params, $context ) {
+		$output = [];
 
-		$params = [];
+		foreach ( $params as $key => $value ) {
 
-		foreach ( $raw_params as $name => $value ) {
+			$key = uawpf_webhook_clean_key( $key );
 
-			$name = Formatting::sanitize_header_name( $name );
-
-			// Skip params if name it's an empty string.
-			if ( wpforms_is_empty_string( $name ) ) {
+			if ( '' === $key ) {
 				continue;
 			}
 
-			// Determine if it a custom value.
-			if ( 0 === strpos( $name, 'custom_' ) && is_array( $value ) ) {
-				$value = $this->set_request_custom_value( $value, $context );
+			// Handle custom fields.
+			if ( 0 === strpos( $key, 'custom_' ) && is_array( $value ) ) {
+				$value = $this->prepare_custom_field( $value, $context );
+			} elseif ( '' !== trim( $value ) ) {
+				$value = sanitize_text_field( $value );
 			} else {
-				$value = ! wpforms_is_empty_string( $value ) ? absint( $value ) : false;
-			}
-
-			if ( false === $value ) {
 				continue;
 			}
 
-			$params[ $name ] = $value;
+			$output[ $key ] = $value;
 		}
 
-		return $params;
+		return $output;
 	}
 
 	/**
-	 * Set and sanitize custom value for request.
+	 * Prepare custom secure field.
 	 *
-	 * @since 1.1.0
-	 *
-	 * @param array  $custom  Custom value data.
-	 * @param string $context Context for request parameters - header or body.
+	 * @param array  $field   Field array.
+	 * @param string $context Context of usage.
 	 *
 	 * @return array|false
 	 */
-	protected function set_request_custom_value( $custom, $context ) {
+	protected function prepare_custom_field( $field, $context ) {
 
-		if ( ! isset( $custom['value'] ) ) {
+		if ( empty( $field['value'] ) && '0' !== $field['value'] ) {
 			return false;
 		}
 
-		if ( wpforms_is_empty_string( $custom['value'] ) ) {
-			return [ 'value' => '' ];
+		$value = ( 'header' === $context )
+			? uawpf_webhook_clean_header_value( $field['value'] )
+			: wp_kses_post( $field['value'] );
+
+		$secure = ! empty( $field['secure'] );
+
+		if ( $this->encrypt_mode && $secure ) {
+			$value = Crypto::encrypt( $value );
 		}
 
-		if ( 'header' === $context ) {
-			$custom['value'] = Formatting::sanitize_header_value( $custom['value'] );
-		}
-
-		if ( ! $this->use_encrypt || ! isset( $custom['secure'] ) ) {
-			return $custom;
-		}
-
-		$custom['secure'] = wp_validate_boolean( $custom['secure'] );
-
-		if ( $custom['secure'] ) {
-			$custom['value'] = Crypto::encrypt( $custom['value'] );
-		}
-
-		return $custom;
+		return [
+			'value'  => $value,
+			'secure' => (bool) $secure,
+		];
 	}
 
 	/**
-	 * Get the Webhook default data.
-	 *
-	 * @since 1.0.0
+	 * Default webhook structure.
 	 *
 	 * @return array
 	 */
 	public function get_defaults() {
-
 		return [
-			'name'    => esc_html__( 'Ultra Addons Webhook', 'ultrawpf-webhooks' ),
-			'method'  => 'get',
-			'format'  => 'json',
+			'id'      => 0,
+			'name'    => __( 'UAWPF Webhook', 'uawpf-webhook' ),
+			'method'  => 'post',
 			'url'     => '',
 			'headers' => [],
 			'body'    => [],

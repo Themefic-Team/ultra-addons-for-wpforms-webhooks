@@ -2,63 +2,62 @@
 
 namespace Themefic\UtrawpfWebhooks;
 
-use Themefic\UtrawpfWebhooks\Settings\FormBuilder;
-use Themefic\UtrawpfWebhooks\Settings\Settings;
-use Themefic\UtrawpfWebhooks\Settings\Uawpf_Webhook;
+use Themefic\UtrawpfWebhooks\Settings\FormBuilderUI;
+use Themefic\UtrawpfWebhooks\Settings\SettingsManager;
 
 final class WebhookAddon {
     
-    public $form_builder;
-    public $settings;
-    public $process;
+	private static $instance = null;
 
-    public static function get_instance() {
+	public $builder_ui;
+	public $settings_manager;
+	public $processor;
 
-		static $instance;
-
-		if ( ! $instance ) {
-			$instance = new self();
-
-			$instance->run_webhooks();
+	/**
+	 * Get singleton instance.
+	 */
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+			self::$instance->boot();
 		}
-
-		return $instance;
+		return self::$instance;
 	}
 
-    public function run_webhooks() {
+	/**
+	 * Bootstrap the addon.
+	 */
+    public function boot() {
 
-        add_action( 'wpforms_loaded', array( $this, 'load_webhooks_components' ), 15 );
-        add_filter( 'wpforms_helpers_templates_include_html_located', [ $this, 'templates' ], 10, 4 );
+        add_action( 'wpforms_loaded', array( $this, 'register_components' ), 15 );
+        add_filter( 'wpforms_helpers_templates_include_html_located', [ $this, 'override_templates' ], 10, 4 );
 
     }
 
-    public function load_webhooks_components() {
+	/**
+	 * Load and initialize components.
+	 */
+	public function register_components() {
 
-		if (
-			wpforms_is_admin_page( 'builder' ) ||
-			wp_doing_ajax()
-		) {
-			
-			$this->form_builder = new FormBuilder();
-			$this->settings     = new Settings();
+		if ( wpforms_is_admin_page( 'builder' ) || wp_doing_ajax() ) {
+			$this->builder_ui      = new FormBuilderUI();
+			$this->settings_manager = new SettingsManager();
 
-			$this->form_builder->init();
-			$this->settings->init();
+			$this->builder_ui->init();
+			$this->settings_manager->init();
 		}
 
-		$this->process = new Process();
-		$this->process->init();
+		$this->processor = new WebhookProcessor();
+		$this->processor->init();
 	}
 
-	public function templates( $located, $template, $args, $extract ) {
-
-		if (
-			( 0 === strpos( $template, ULTRAWPF_WEBHOOKS_PATH ) ) &&
-			is_readable( $template )
-		) {
+	/**
+	 * Allow loading our own template files.
+	 */
+	public function override_templates( $located, $template, $args, $extract ) {
+		if ( strpos( $template, ULTRAWPF_WEBHOOKS_PATH ) === 0 && is_readable( $template ) ) {
 			return $template;
 		}
-
 		return $located;
 	}
 

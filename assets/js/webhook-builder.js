@@ -1,10 +1,9 @@
 /* global wpforms_builder, wpf, WPForms */
 
-const UAWPFWebhooks = window.UAWPFWebhooks || ( function( document, window, $ ) {
+const UAWPFWebhooks = window.UAWPFWebhooks || (function (document, window, $) {
 
-	var app = {
-
-		$holder: $( '.wpforms-panel-content-section-uawpf-webhooks' ),
+    const app = {
+        $holder: $('.wpforms-panel-content-section-uawpf-webhooks'),
 
         init() {
             const observer = new MutationObserver(() => {
@@ -13,270 +12,175 @@ const UAWPFWebhooks = window.UAWPFWebhooks || ( function( document, window, $ ) 
                     observer.disconnect();
                 }
             });
+
             observer.observe(document.body, { childList: true, subtree: true });
         },
 
+        ready() {
+            app.events();
+        },
 
-		ready() {
-			app.events();
-		},
+        /**
+         * Register JS events.
+         */
+        events() {
+            $('#wpforms-builder')
+                .on('wpformsSaved', app.requiredFields.init)
+                .on('wpformsSettingsBlockAdded', app.webhookBlockAdded)
+                .on('wpformsFieldMapTableAddedRow', app.fieldMapTableAddRow)
+                .on('change', '#wpforms-panel-field-settings-uawpf-webhooks_enable', app.webhooksToggle)
+                .on('input', '.wpforms-field-map-table .http-key-source', app.updateNameAttr);
 
-		/**
-		 * Register JS events.
-		 *
-		 * @since 1.0.0
-		 */
-		events() {
-			$( '#wpforms-builder' )
-				.on( 'wpformsSaved', app.requiredFields.init )
-				.on( 'wpformsSettingsBlockAdded', app.webhookBlockAdded )
-				.on( 'wpformsFieldMapTableAddedRow', app.fieldMapTableAddRow )
-				.on( 'change', '#wpforms-panel-field-settings-uawpf-webhooks_enable', app.webhooksToggle )
-				.on( 'input', '.wpforms-field-map-table .http-key-source', app.updateNameAttr );
+            app.$holder
+                .on('change', '.wpforms-field-map-table .wpforms-field-map-select', app.changeSourceSelect)
+                .on('click', '.wpforms-field-map-table .wpforms-field-map-custom-value-close', app.closeCustomValue)
+                .on('click keydown', '.wpforms-field-map-table .wpforms-field-map-is-secure.disabled input', app.returnFalseHandler);
+        },
 
-			app.$holder
-				.on( 'change', '.wpforms-field-map-table .wpforms-field-map-select', app.changeSourceSelect )
-				.on( 'click', '.wpforms-field-map-table .wpforms-field-map-custom-value-close', app.closeCustomValue )
-				.on( 'click', '.wpforms-field-map-table .wpforms-field-map-is-secure.disabled input', app.returnFalseHandler )
-				.on( 'keydown', '.wpforms-field-map-table .wpforms-field-map-is-secure.disabled input', app.returnFalseHandler );
-		},
+        /**
+         * Reset fields when adding a new webhook block.
+         */
+        webhookBlockAdded(event, $block) {
+            if (!$block.length || $block.data('block-type') !== 'uawpf-webhook') return;
+            $block.find('.wpforms-field-map-table .wpforms-field-map-custom-value-close').trigger('click');
+        },
 
-		/**
-		 * Resetting fields when we add a new webhook.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param {Object} event  Event object.
-		 * @param {Object} $block New Webhook block.
-		 */
-		webhookBlockAdded( event, $block ) {
-			if ( ! $block.length || 'uawpf-webhook' !== $block.data( 'block-type' ) ) {
-				return;
-			}
+        /**
+         * Reset fields when adding a new table row for mapping.
+         */
+        fieldMapTableAddRow(event, $block, $choice) {
+            if (!$block.length || $block.data('block-type') !== 'uawpf-webhook' || !$choice.length) return;
 
-			$block.find( '.wpforms-field-map-table .wpforms-field-map-custom-value-close' ).trigger( 'click' );
-		},
+            $choice.find('.wpforms-field-map-is-secure-checkbox').val('1');
+            $choice.find('.wpforms-field-map-custom-value-close').trigger('click');
+        },
 
-		/**
-		 * Resetting fields when we add a new table row for mapping.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param {Object} event   Event object.
-		 * @param {Object} $block  jQuery selector on Webhook block.
-		 * @param {Object} $choice jQuery selector on new table row.
-		 */
-		fieldMapTableAddRow( event, $block, $choice ) {
-			if ( ! $block.length || 'uawpf-webhook' !== $block.data( 'block-type' ) || ! $choice.length ) {
-				return;
-			}
+        /**
+         * Toggle webhook settings visibility.
+         */
+        webhooksToggle() {
+            app.$holder
+                .find('.wpforms-builder-settings-block-uawpf-webhook, .uawpf-webhooks-add')
+                .toggleClass('hidden', !$(this).is(':checked'));
+        },
 
-			// Secure? checkbox value should always be 1.
-			$choice.find( '.wpforms-field-map-is-secure-checkbox' ).val( '1' );
+        /**
+         * Update key source names in field map table.
+         */
+        updateNameAttr() {
+            const $this = $(this),
+                  value = $this.val();
 
-			// Close the "Custom Value" field.
-			$choice.find( '.wpforms-field-map-custom-value-close' ).trigger( 'click' );
-		},
+            if (value === undefined || value === null) return;
 
-		/**
-		 * Toggle the displaying webhook settings depending on if the
-		 * webhooks are enabled.
-		 *
-		 * @since 1.0.0
-		 */
-		webhooksToggle() {
-			app.$holder
-				.find( '.wpforms-builder-settings-block-webhook, .wpforms-uawpf-webooks-add' )
-				.toggleClass( 'hidden', $( this ).not( ':checked' ) );
-		},
+            const $row = $this.closest('tr');
+            let $targets = $row.find('.wpforms-field-map-select');
+            const name = $targets.data('name');
 
-		/**
-		 * Field map table, update a key source.
-		 *
-		 * @since 1.0.0
-		 */
-		updateNameAttr() {
-			const $this = $( this ),
-				value = $this.val();
+            if ($row.find('td.field').hasClass('field-is-custom-value')) {
+                $targets = $row.find('.wpforms-field-map-custom-value, .wpforms-field-map-is-secure-checkbox');
+            }
 
-			if ( ! value && '' !== value ) {
-				return;
-			}
+            $targets.each((idx, field) => {
+                const newName = name + $(field).data('suffix');
+                $(field).attr('name', newName.replace('{source}', value.replace(/[^a-zA-Z0-9._-]/g, '')));
+            });
+        },
 
-			const $row = $this.closest( 'tr' );
-			let $targets = $row.find( '.wpforms-field-map-select' );
-			const name = $targets.data( 'name' );
+        /**
+         * Handle "Add Custom Value" source selection.
+         */
+        changeSourceSelect() {
+            const $row = $(this).closest('tr'),
+                  isCustomValue = this.value === 'custom_value';
 
-			if ( $row.find( 'td.field' ).hasClass( 'field-is-custom-value' ) ) {
-				$targets = $row.find( '.wpforms-field-map-custom-value, .wpforms-field-map-is-secure-checkbox' );
-			}
+            if (isCustomValue) {
+                $(this).attr('name', '');
+                $row.find('td.field').toggleClass('field-is-custom-value', true);
+                $row.find('.http-key-source').trigger('input.wpformsWebhooks');
+            }
+        },
 
-			$targets.each( function( idx, field ) {
-				const newName = name + $( field ).data( 'suffix' );
+        /**
+         * Close "Custom Value" field.
+         */
+        closeCustomValue(event) {
+            event.preventDefault();
 
-				// Allow characters (lowercase and uppercase), numbers, decimal point, underscore and minus.
-				$( field ).attr( 'name', newName.replace( '{source}', value.replace( /[^a-zA-Z0-9._-]/gi, '' ) ) );
-			} );
-		},
+            const $row = $(this).closest('tr');
+            $row.find('td.field').removeClass('field-is-custom-value');
+            $row.find('.wpforms-field-map-select').prop('selectedIndex', 0);
+            $row.find('.wpforms-field-map-is-secure').removeClass('disabled');
+            $row.find('.wpforms-field-map-is-secure-checkbox').attr('name', '').prop('checked', false);
+            $row.find('.wpforms-field-map-custom-value').attr('name', '').prop('readonly', false).val('');
+            $row.find('.insert-smart-tag-dropdown').addClass('closed');
+            WPForms.Admin.Builder.SmartTags.reinitWidgets($row);
+        },
 
-		/**
-		 * Event-callback when the source select was changed on "Add Custom Value".
-		 *
-		 * @since 1.1.0
-		 */
-		changeSourceSelect() {
-			const $row = $( this ).closest( 'tr' ),
-				isCustomValue = ( this.value && this.value === 'custom_value' );
+        /**
+         * Prevent click/keydown on disabled inputs.
+         */
+        returnFalseHandler() {
+            return false;
+        },
 
-			if ( isCustomValue ) {
-				$( this ).attr( 'name', '' );
-				$row.find( 'td.field' ).toggleClass( 'field-is-custom-value', isCustomValue );
-				$row.find( '.http-key-source' ).trigger( 'input.wpformsWebhooks' );
-			}
-		},
+        /**
+         * Required fields validation logic.
+         */
+        requiredFields: {
+            hasErrors: false,
+            isNotified: false,
 
-		/**
-		 * Event-callback when the close button for "Custom Value" was clicked.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param {Object} event Event object.
-		 */
-		closeCustomValue( event ) {
-			const $row = $( this ).closest( 'tr' );
+            init() {
+                const $blocks = app.$holder.find('.wpforms-builder-settings-block-uawpf-webhook');
+                if (!$blocks.length || $blocks.hasClass('hidden')) return;
 
-			event.preventDefault();
+                app.requiredFields.isNotified = false;
+                $blocks.each(app.requiredFields.check);
+            },
 
-			$row.find( 'td.field' ).removeClass( 'field-is-custom-value' );
-			$row.find( '.wpforms-field-map-select' ).prop( 'selectedIndex', 0 );
-			$row.find( '.wpforms-field-map-is-secure' ).removeClass( 'disabled' );
-			$row.find( '.wpforms-field-map-is-secure-checkbox' )
-				.attr( 'name', '' )
-				.prop( 'checked', false );
-			$row.find( '.wpforms-field-map-custom-value' )
-				.attr( 'name', '' )
-				.prop( 'readonly', false )
-				.val( '' );
+            check() {
+                app.requiredFields.hasErrors = false;
 
-			// Close opened dropdown and re-init Smart Tags for the row.
-			$row.find( '.insert-smart-tag-dropdown' ).addClass( 'closed' );
-			WPForms.Admin.Builder.SmartTags.reinitWidgets( $row );
-		},
+                $(this).find('input.wpforms-required, select.wpforms-required').each(function () {
+                    const $field = $(this),
+                          value = $field.val();
 
-		/**
-		 * Prevent from click/keydown events.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @return {boolean} False.
-		 */
-		returnFalseHandler() {
-			return false;
-		},
+                    if (_.isEmpty(value) || ($field.hasClass('wpforms-required-url') && !wpf.isURL(value))) {
+                        $field.addClass('wpforms-error');
+                        app.requiredFields.hasErrors = true;
+                    } else {
+                        $field.removeClass('wpforms-error');
+                    }
+                });
 
-		/**
-		 * On form save notify the user about "Required fields".
-		 *
-		 * @since 1.0.0
-		 *
-		 * @type {Object}
-		 */
-		requiredFields: {
+                app.requiredFields.notify();
+            },
 
-			/**
-			 * True if we have not filled the required fields.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @type {boolean}
-			 */
-			hasErrors: false,
+            notify() {
+                if (app.requiredFields.hasErrors && !app.requiredFields.isNotified) {
+                    $.alert({
+                        title: wpforms_builder.heads_up,
+                        content: wpforms_builder.webhook_required_flds,
+                        icon: 'fa fa-exclamation-circle',
+                        type: 'orange',
+                        buttons: {
+                            confirm: {
+                                text: wpforms_builder.ok,
+                                btnClass: 'btn-confirm',
+                                keys: ['enter']
+                            }
+                        }
+                    });
 
-			/**
-			 * We need to notify the user only once.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @type {boolean}
-			 */
-			isNotified: false,
+                    app.requiredFields.isNotified = true;
+                }
+            }
+        }
+    };
 
-			/**
-			 * Initialization for required fields checking.
-			 *
-			 * @since 1.0.0
-			 */
-			init() {
-				const $settingBlocks = app.$holder.find( '.wpforms-builder-settings-block-webhook' );
+    return app;
 
-				if (
-					! $settingBlocks.length ||
-					$settingBlocks.hasClass( 'hidden' )
-				) {
-					return;
-				}
-
-				app.requiredFields.isNotified = false;
-				$settingBlocks.each( app.requiredFields.check );
-			},
-
-			/**
-			 * Do the actual required fields check.
-			 *
-			 * @since 1.0.0
-			 */
-			check() {
-				app.requiredFields.hasErrors = false;
-
-				$( this ).find( 'input.wpforms-required, select.wpforms-required' ).each( function() {
-					const $field = $( this ),
-						value = $field.val();
-
-					if (
-						_.isEmpty( value ) ||
-						( $field.hasClass( 'wpforms-required-url' ) && ! wpf.isURL( value ) )
-					) {
-						$field.addClass( 'wpforms-error' );
-						app.requiredFields.hasErrors = true;
-					} else {
-						$field.removeClass( 'wpforms-error' );
-					}
-				} );
-
-				// Notify user.
-				app.requiredFields.notify();
-			},
-
-			/**
-			 * Modal that is used for user notification.
-			 *
-			 * @since 1.0.0
-			 */
-			notify() {
-				if ( app.requiredFields.hasErrors && ! app.requiredFields.isNotified ) {
-					$.alert( {
-						title: wpforms_builder.heads_up,
-						content: wpforms_builder.webhook_required_flds,
-						icon: 'fa fa-exclamation-circle',
-						type: 'orange',
-						buttons: {
-							confirm: {
-								text: wpforms_builder.ok,
-								btnClass: 'btn-confirm',
-								keys: [ 'enter' ],
-							},
-						},
-					} );
-
-					// Save that we have already showed the user.
-					app.requiredFields.isNotified = true;
-				}
-			},
-		},
-	};
-
-	// Provide access to public functions/properties.
-	return app;
-}( document, window, jQuery ) );
+})(document, window, jQuery);
 
 UAWPFWebhooks.init();

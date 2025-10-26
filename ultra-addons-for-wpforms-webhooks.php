@@ -15,9 +15,6 @@
  *
  */
 
-// Exit if accessed directly.
-use WPFormsWebhooks\Plugin;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -97,7 +94,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 
 	public function ultrawpf_webhooks_load() {
 		
-		return WebhookAddon::get_instance();
+		return WebhookAddon::instance();
 	}
     
     /*
