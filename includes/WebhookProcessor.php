@@ -6,8 +6,6 @@ use WPForms\Helpers\Crypto;
 
 class WebhookProcessor {
 
-	const ACTION = 'uawpf_webhooks_trigger_delivery';
-
 	protected $fields    = [];
 	protected $form_data = [];
 	protected $entry     = [];
@@ -15,7 +13,7 @@ class WebhookProcessor {
 
     public function init() {
         add_action( 'wpforms_process_complete', [ $this, 'uawpf_handle_submission' ], 10, 4 );
-		add_action( self::ACTION,               [ $this, 'uawpf_execute_delivery' ] );
+		add_action( 'uawpf_webhooks_trigger_delivery',               [ $this, 'uawpf_execute_delivery' ] );
     }
 
 	/**
@@ -27,7 +25,7 @@ class WebhookProcessor {
 		) {
 			return;
 		}
-
+		uawpf_print_r($entry);
 		$this->fields    = $fields;
 		$this->entry     = $entry;
 		$this->form_data = $form_data;
@@ -36,7 +34,7 @@ class WebhookProcessor {
 		foreach ($form_data['settings']['uawpf-webhooks'] as $webhook) {
 			wpforms()
 				->obj('tasks')
-				->create(self::ACTION)
+				->create('uawpf_webhooks_trigger_delivery')
 				->async()
 				->params($webhook, $this->fields, $this->form_data, $this->entry_id)
 				->register();
