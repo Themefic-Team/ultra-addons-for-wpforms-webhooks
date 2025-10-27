@@ -28,7 +28,7 @@ class SettingsManager {
 		}
 
 		$form_json = json_decode( stripslashes( $form['post_content'] ), true );
-
+		
 		foreach ( $form_json['settings']['uawpf-webhooks'] as $id => &$hook_data ) {
 			if ( empty( $hook_data['url'] ) || ! uawpf_webhook_is_url( $hook_data['url'] ) ) {
 				unset( $form_json['settings']['uawpf-webhooks'][ $id ] );

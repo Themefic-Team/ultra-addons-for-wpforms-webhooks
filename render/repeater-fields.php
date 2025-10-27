@@ -97,8 +97,8 @@ $allowed    = $args['allowed_types'] ?? '';
 					</div>
 				</td>
 				<td class="actions uawpf-field-map-actions">
-					<a class="add uawpf-field-map-add" href="#"><i class="fa fa-plus-circle"></i></a>
-					<a class="remove uawpf-field-map-remove" href="#"><i class="fa fa-minus-circle"></i></a>
+					<a class="add uawpf-field-map-add" href="#"><i class="fa fa-plus-square"></i></a>
+					<a class="remove uawpf-field-map-remove" href="#"><i class="fa fa-minus-square"></i></a>
 				</td>
 			</tr>
 		<?php endforeach; ?>

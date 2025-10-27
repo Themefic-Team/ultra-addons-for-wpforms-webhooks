@@ -27,7 +27,7 @@ class FormBuilderUI {
 		$webhooks = WebhookAddon::instance()->settings_manager->get_prop( 'webhooks' );
 
 		echo wpforms_render(
-			ULTRAWPF_WEBHOOKS_PATH . 'views/settings/section',
+			ULTRAWPF_WEBHOOKS_PATH . 'render/section',
 			[
 				'next_id'             => max( array_keys( $webhooks ) ) + 1,
 				'enable_control_html' => $this->render_enable_toggle(),
@@ -93,7 +93,7 @@ class FormBuilderUI {
 		}
 
 		$result = wpforms_render(
-			ULTRAWPF_WEBHOOKS_PATH . 'views/settings/block',
+			ULTRAWPF_WEBHOOKS_PATH . 'render/block',
 			[
 				'id'            => $webhook_id,
 				'name'          => $webhook['name'],
@@ -178,7 +178,7 @@ class FormBuilderUI {
 
 		// Headers Mapping.
 		$result .= wpforms_render(
-			ULTRAWPF_WEBHOOKS_PATH . 'views/settings/repeater-fields',
+			ULTRAWPF_WEBHOOKS_PATH . 'render/repeater-fields',
 			[
 				'title'         => esc_html__( 'Request Headers', 'ultrawpf-webhooks' ),
 				'webhook_id'    => $webhook_id,
@@ -191,7 +191,7 @@ class FormBuilderUI {
 
 		// Body Mapping.
 		$result .= wpforms_render(
-			ULTRAWPF_WEBHOOKS_PATH . 'views/settings/repeater-fields',
+			ULTRAWPF_WEBHOOKS_PATH . 'render/repeater-fields',
 			[
 				'title'         => esc_html__( 'Request Body', 'ultrawpf-webhooks' ),
 				'webhook_id'    => $webhook_id,
@@ -231,6 +231,20 @@ class FormBuilderUI {
 	}
 
 	public function filter_allowed_fields( $allowed_field_types ) {
+
+		// Ensure we have an array.
+		if ( ! is_array( $allowed_field_types ) ) {
+			$allowed_field_types = [];
+		}
+
+		// Add your custom UAWPF field types here.
+		$custom_field_types = [
+			'uawpf-url',
+			'uawpf_phone',
+			'file',
+		];
+
+		$allowed_field_types = array_unique( array_merge( $allowed_field_types, $custom_field_types ) );
 
 		$this->allowed_field_types = ! empty( $allowed_field_types ) ? $allowed_field_types : [ 'all-fields' ];
 

@@ -18,18 +18,22 @@
     right: 40px;
 }
 
-#wpforms-panel-settings .wpforms-panel-content-section-uawpf-webhooks .wpforms-panel-content-section-title {
-  line-height: 38px;
-}
-
-#wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-table table {
-  table-layout: fixed;
-  width: 100%;
-}
-
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-table td.key {
   max-width: 40%;
   width: 40%;
+}
+
+#wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-builder-settings-block-content input, 
+#wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-builder-settings-block-content select {
+  height: 40px;
+  padding: 8px 16px;
+  border: 1px solid #DEEDED;
+  background-color: #FAFFFF;
+  color: #007A77;
+}
+
+#wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-builder-settings-block-content .wpforms-field-map-table .actions .add {
+  color: #007A77;
 }
 
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-table td.field {
@@ -38,16 +42,29 @@
 }
 
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook select.wpforms-field-map-select {
-  height: 32px;
+  height: 40px;
   width: 100%;
+  padding: 8px 16px;
+  border: 1px solid #DEEDED;
+  background-color: #FAFFFF;
+  color: #007A77;
 }
 
-#wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-wrap {
+#wpforms-panel-settings .wpforms-panel-content-section-uawpf-webhooks .wpforms-builder-settings-block-header {
+	background-color: #FAFFFF;
+	border-bottom: 1px solid #007A77;
+}
+
+#wpforms-panel-settings .wpforms-panel-content-section-uawpf-webhooks .wpforms-builder-settings-block {
+	border: 1px solid #007A77;
+}
+
+/* #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-wrap {
   display: flex;
   flex-wrap: nowrap;
   align-content: center;
   align-items: center;
-}
+} */
 
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-wrap-l {
   max-width: 100%;
