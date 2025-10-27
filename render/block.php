@@ -1,13 +1,8 @@
 <?php
-/**
- * Render a single webhook settings block.
- */
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+
 ?>
-<div class="<?php echo esc_attr( $args['block_classes'] ); ?> wpforms-builder-settings-block wpforms-builder-settings-block-uawpf-webhook wpforms-builder-settings-block-uawpf" data-block-type="uawpf-webhook" data-block-id="<?php echo absint( $args['id'] ); ?>">
+<div class="<?php echo esc_attr( $args['block_classes'] ); ?> wpforms-builder-settings-block wpforms-builder-settings-block-uawpf-webhook" data-block-type="uawpf-webhook" data-block-id="<?php echo absint( $args['id'] ); ?>">
 	<div class="wpforms-builder-settings-block-header">
 		<div class="wpforms-builder-settings-block-actions">
 			<button class="wpforms-builder-settings-block-delete"><i class="fa fa-trash-o"></i></button>

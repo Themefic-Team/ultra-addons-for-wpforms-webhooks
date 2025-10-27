@@ -1,13 +1,6 @@
 <?php
-/**
- * Webhooks panel section.
- *
- * @var array $args
- */
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) { exit;}
+
 ?>
 <div class="wpforms-panel-content-section wpforms-panel-content-section-uawpf-webhooks">
 	<div class="wpforms-panel-content-section-title">

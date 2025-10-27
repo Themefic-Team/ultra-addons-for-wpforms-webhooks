@@ -232,7 +232,6 @@ class FormBuilderUI {
 
 	public function filter_allowed_fields( $allowed_field_types ) {
 
-		// Ensure we have an array.
 		if ( ! is_array( $allowed_field_types ) ) {
 			$allowed_field_types = [];
 		}
