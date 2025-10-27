@@ -49,20 +49,20 @@ const WebhooksManager = (function (document, window, $) {
                 .on('input', '.wpforms-field-map-table .http-key-source', this.updateFieldNames);
 
             this.$holder
-                .on('change', '.wpforms-field-map-table .wpforms-field-map-select', this.handleSourceChange)
-                .on('click', '.wpforms-field-map-table .wpforms-field-map-custom-value-close', this.closeCustomValue)
-                .on('click keydown', '.wpforms-field-map-table .wpforms-field-map-is-secure.disabled input', this.preventAction);
+                .on('change', '.wpforms-field-map-table .uawpf-field-map-select', this.handleSourceChange)
+                .on('click', '.wpforms-field-map-table .uawpf-field-map-custom-value-close', this.closeCustomValue)
+                .on('click keydown', '.wpforms-field-map-table .uawpf-field-map-is-secure.disabled input', this.preventAction);
         },
 
         handleBlockAdded(event, $block) {
             if ($block?.data('block-type') !== 'uawpf-webhook') return;
-            $block.find('.wpforms-field-map-custom-value-close').trigger('click');
+            $block.find('.uawpf-field-map-custom-value-close').trigger('click');
         },
 
         handleRowAdded(event, $block, $choice) {
             if ($block?.data('block-type') !== 'uawpf-webhook' || !$choice.length) return;
-            $choice.find('.wpforms-field-map-is-secure-checkbox').val('1');
-            $choice.find('.wpforms-field-map-custom-value-close').trigger('click');
+            $choice.find('.uawpf-field-map-is-secure-checkbox').val('1');
+            $choice.find('.uawpf-field-map-custom-value-close').trigger('click');
         },
 
         toggleWebhooks() {
@@ -73,11 +73,11 @@ const WebhooksManager = (function (document, window, $) {
 
         updateFieldNames() {
             const $row = $(this).closest('tr');
-            let $fields = $row.find('.wpforms-field-map-select');
+            let $fields = $row.find('.uawpf-field-map-select');
             const name = $fields.data('name');
 
-            if ($row.find('td.field').hasClass('field-is-custom-value')) {
-                $fields = $row.find('.wpforms-field-map-custom-value, .wpforms-field-map-is-secure-checkbox');
+            if ($row.find('td.field').hasClass('uawpf-field-is-custom-value')) {
+                $fields = $row.find('.uawpf-field-map-custom-value, .uawpf-field-map-is-secure-checkbox');
             }
 
             const cleanVal = $(this).val()?.replace(/[^a-zA-Z0-9._-]/g, '') || '';
@@ -93,7 +93,7 @@ const WebhooksManager = (function (document, window, $) {
 
             if (isCustom) {
                 $(this).attr('name', '');
-                $row.find('td.field').addClass('field-is-custom-value');
+                $row.find('td.field').addClass('uawpf-field-is-custom-value');
                 $row.find('.http-key-source').trigger('input');
             }
         },
@@ -102,11 +102,11 @@ const WebhooksManager = (function (document, window, $) {
             event.preventDefault();
             const $row = $(this).closest('tr');
 
-            $row.find('td.field').removeClass('field-is-custom-value');
-            $row.find('.wpforms-field-map-select').prop('selectedIndex', 0);
-            $row.find('.wpforms-field-map-is-secure').removeClass('disabled');
-            $row.find('.wpforms-field-map-is-secure-checkbox').attr('name', '').prop('checked', false);
-            $row.find('.wpforms-field-map-custom-value').attr('name', '').prop('readonly', false).val('');
+            $row.find('td.field').removeClass('uawpf-field-is-custom-value');
+            $row.find('.uawpf-field-map-select').prop('selectedIndex', 0);
+            $row.find('.uawpf-field-map-is-secure').removeClass('disabled');
+            $row.find('.uawpf-field-map-is-secure-checkbox').attr('name', '').prop('checked', false);
+            $row.find('.uawpf-field-map-custom-value').attr('name', '').prop('readonly', false).val('');
             $row.find('.insert-smart-tag-dropdown').addClass('closed');
 
             if (WPForms?.Admin?.Builder?.SmartTags) {

@@ -46,7 +46,7 @@ $allowed    = $args['allowed_types'] ?? '';
 					$flds_name['custom'] = sprintf( '%1$s[custom_%2$s][value]', $args['name'], $key );
 					$flds_name['secure'] = sprintf( '%1$s[custom_%2$s][secure]', $args['name'], $key );
 
-					$extra_class = ' field-is-custom-value';
+					$extra_class = ' uawpf-field-is-custom-value';
 
 				} else {
 					$flds_name['source'] = sprintf( '%1$s[%2$s]', $args['name'], $key );
@@ -62,7 +62,7 @@ $allowed    = $args['allowed_types'] ?? '';
 				<td class="field uawpf-field-map-field<?php echo esc_attr( $extra_class ); ?>">
 					<div class="wpforms-field-map-wrap uawpf-field-map-wrap">
 						<div class="wpforms-field-map-wrap-l uawpf-field-map-wrap-l">
-							<select class="key-destination wpforms-field-map-select uawpf-field-map-select" name="<?php echo esc_attr( $flds_name['source'] ); ?>" data-name="<?php echo esc_attr( $args['name'] ); ?>" data-suffix="[{source}]" data-field-map-allowed="<?php echo esc_attr( $args['allowed_types'] ); ?>" data-custom-value-support="true">
+							<select class="key-destination uawpf-field-map-select uawpf-field-map-select" name="<?php echo esc_attr( $flds_name['source'] ); ?>" data-name="<?php echo esc_attr( $args['name'] ); ?>" data-suffix="[{source}]" data-field-map-allowed="<?php echo esc_attr( $args['allowed_types'] ); ?>" data-custom-value-support="true">
 								<option value=""><?php esc_html_e( '--- Select Field ---', 'ultrawpf-webhooks' ); ?></option>
 								<?php
 								if ( ! empty( $args['fields'] ) ) {
@@ -82,16 +82,16 @@ $allowed    = $args['allowed_types'] ?? '';
 								<option value="custom_value" class="wpforms-field-map-option-custom-value uawpf-field-map-option-custom-value"><?php esc_html_e( 'Add Custom Value', 'ultrawpf-webhooks' ); ?></option>
 							</select>
 							<div class="wpforms-field-map-custom-wrap uawpf-field-map-custom-wrap">
-								<label class="wpforms-field-map-is-secure uawpf-field-map-is-secure <?php echo $is_secure_checked ? 'disabled' : ''; ?>">
-									<input class="wpforms-field-map-is-secure-checkbox uawpf-field-map-is-secure-checkbox" name="<?php echo esc_attr( $flds_name['secure'] ); ?>" data-suffix="[custom_{source}][secure]" type="checkbox" value="1" <?php checked( $is_secure_checked ); ?> autocomplete="off">
+								<label class="uawpf-field-map-is-secure uawpf-field-map-is-secure <?php echo $is_secure_checked ? 'disabled' : ''; ?>">
+									<input class="uawpf-field-map-is-secure-checkbox uawpf-field-map-is-secure-checkbox" name="<?php echo esc_attr( $flds_name['secure'] ); ?>" data-suffix="[custom_{source}][secure]" type="checkbox" value="1" <?php checked( $is_secure_checked ); ?> autocomplete="off">
 								</label>
-								<input class="wpforms-field-map-custom-value wpforms-smart-tags-enabled uawpf-field-map-custom-value"
+								<input class="uawpf-field-map-custom-value wpforms-smart-tags-enabled uawpf-field-map-custom-value"
 									name="<?php echo esc_attr( $flds_name['custom'] ); ?>"
 									data-suffix="[custom_{source}][value]" type="text"
 									data-type="other"
 									placeholder="<?php esc_html_e( 'Custom Value', 'ultrawpf-webhooks' ); ?>"
 									value="<?php echo esc_attr( $is_custom ? $value['value'] : '' ); ?>" <?php wpforms_readonly( $is_secure_checked ); ?>>
-								<a href="#" class="wpforms-field-map-custom-value-close uawpf-field-map-custom-value-close fa fa-close"></a>
+								<a href="#" class="uawpf-field-map-custom-value-close uawpf-field-map-custom-value-close fa fa-close"></a>
 							</div>
 						</div>
 					</div>
