@@ -10,11 +10,11 @@ class FormBuilderUI {
 
     public function init() {
 
-		add_filter( 'wpforms_builder_settings_sections',   [ $this, 'add_settings_sidebar_section' ],   40, 2 ); // Done
+		add_filter( 'wpforms_builder_settings_sections',   [ $this, 'add_settings_sidebar_section' ],   40, 2 );
         add_action( 'wpforms_form_settings_panel_content', [ $this, 'render_settings_panel_content' ],   40 );
-		add_action( 'wpforms_builder_enqueues',            [ $this, 'enqueue_builder_assets' ],  10 ); // Done
-		add_filter( 'wpforms_builder_strings',             [ $this, 'inject_builder_strings' ], 40, 2 ); // Done
-		add_filter( 'wpforms_get_form_fields_allowed',     [ $this, 'filter_allowed_fields' ] ); // Done
+		add_action( 'wpforms_builder_enqueues',            [ $this, 'enqueue_builder_assets' ],  10 ); 
+		add_filter( 'wpforms_builder_strings',             [ $this, 'inject_builder_strings' ], 40, 2 ); 
+		add_filter( 'wpforms_get_form_fields_allowed',     [ $this, 'filter_allowed_fields' ] ); 
 
     }
 
@@ -258,7 +258,7 @@ class FormBuilderUI {
 		$strings['uawpf-webhook_error']         = esc_html__( 'You must provide a webhook name', 'wpforms-webhooks' );
 		$strings['uawpf-webhook_delete']        = esc_html__( 'Are you sure that you want to delete this webhook?', 'wpforms-webhooks' );
 		$strings['uawpf-webhook_def_name']      = esc_html__( 'Unnamed Webhook', 'wpforms-webhooks' );
-		$strings['uawpf-webhook_required_flds'] = esc_html__( 'Your form contains required Webhook settings that have not been configured. Please double-check and configure these settings to complete the connection setup.', 'wpforms-webhooks' );
+		$strings['uawpf_webhook_required_flds'] = esc_html__( 'Your form contains required Webhook settings that have not been configured. Please double-check and configure these settings to complete the connection setup.', 'wpforms-webhooks' );
 
 		return $strings;
 	}

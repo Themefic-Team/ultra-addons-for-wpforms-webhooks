@@ -227,7 +227,7 @@
   display: inline-block;
 }
 
-#wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .field-is-custom-value .wpforms-field-map-custom-value-close {
+#wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .field-is-custom-value .uawpf-field-map-custom-value-close {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -235,4 +235,159 @@
 
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .field-is-custom-value select.wpforms-field-map-select {
   display: none;
+}
+
+
+
+
+
+
+/* uawpf-fieldmap.css — distinct appearance and selectors */
+
+/* table layout */
+.uawpf-field-map-table table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+/* key column */
+.uawpf-field-map-table td.uawpf-field-map-key {
+    width: 40%;
+    max-width: 40%;
+    padding-right: 10px;
+}
+
+/* field column */
+.uawpf-field-map-table td.uawpf-field-map-field {
+    width: calc(100% - 38% - 60px);
+    max-width: calc(100% - 38% - 60px);
+}
+
+/* selects and inputs */
+.uawpf-field-map-table select.uawpf-field-map-select,
+.uawpf-field-map-table input.uawpf-field-map-custom-value,
+.uawpf-field-map-table input.uawpf-http-key-source {
+    height: 40px;
+    padding: 8px 10px;
+    border: 1px solid #DDE6E5;
+    background-color: #FFFFFF;
+    color: #0D3330;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+/* custom-value area: hidden by default, revealed when .field-is-custom-value */
+.uawpf-field-map-custom-wrap {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+td.field.field-is-custom-value .uawpf-field-map-custom-wrap {
+    display: flex;
+}
+
+/* show secure toggle when custom mode */
+.field-is-custom-value .uawpf-field-map-is-secure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 44px;
+    border: 1px solid #DDE6E5;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    background: #F7FBFA;
+    color: #6B938F;
+}
+
+/* small icon inside secure toggle (pure CSS using pseudo-element to avoid FA dependence) */
+.field-is-custom-value .uawpf-field-map-is-secure::before {
+    content: "🔒";
+    font-size: 14px;
+}
+
+/* when secure is disabled */
+.uawpf-field-map-is-secure.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* hide select in custom mode */
+.field-is-custom-value select.uawpf-field-map-select {
+    display: none;
+}
+
+/* custom close button */
+.uawpf-field-map-custom-value-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border-radius: 3px;
+    color: #999;
+    cursor: pointer;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+    .uawpf-field-map-table td.uawpf-field-map-key,
+    .uawpf-field-map-table td.uawpf-field-map-field {
+        display: block;
+        width: 100%;
+    }
+
+    .uawpf-field-map-actions {
+        margin-top: 8px;
+    }
+}
+
+
+/* Fix layout for custom field mapping rows */
+.uawpf-field-map-table .field-is-custom-value select.wpforms-field-map-select {
+    display: none !important;
+}
+
+.uawpf-field-map-table .field-is-custom-value .uawpf-field-map-custom-wrap {
+    display: flex !important;
+    align-items: center;
+}
+
+.uawpf-field-map-table .uawpf-field-map-custom-wrap input[type="text"] {
+    flex: 1;
+    height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #DEEDED;
+    border-left: 0;
+    background-color: #FAFFFF;
+    color: #007A77;
+    font-size: 14px;
+}
+
+.uawpf-field-map-table .uawpf-field-map-custom-value-close {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    height: 40px;
+    width: 32px;
+    border: none;
+    background: none;
+    color: #007A77;
+}
+
+.uawpf-field-map-table .uawpf-field-map-is-secure {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 40px;
+    border: 1px solid #DEEDED;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    color: #999;
 }

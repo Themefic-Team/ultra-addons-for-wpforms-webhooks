@@ -1,150 +1,141 @@
-/* global wpforms_builder, wpf, WPForms */
-
-const UAWPFWebhooks = window.UAWPFWebhooks || (function (document, window, $) {
+const WebhooksManager = (function (document, window, $) {
+    const selector = '.wpforms-panel-content-section-uawpf-webhooks';
 
     const app = {
-        $holder: $('.wpforms-panel-content-section-uawpf-webhooks'),
+        $holder: $(selector),
 
         init() {
+            this.waitForElement(selector, this.ready);
+        },
+
+        waitForElement(selector, callback) {
             const observer = new MutationObserver(() => {
-                if (document.querySelector('.wpforms-panel-content-section-uawpf-webhooks')) {
-                    app.ready();
+                if ($(selector).length) {
+                    callback.call(app);
                     observer.disconnect();
                 }
             });
-
             observer.observe(document.body, { childList: true, subtree: true });
         },
 
         ready() {
-            app.events();
+            this.bindEvents();
+
+            jQuery(function($) {
+                const $builder = $('#wpforms-builder');
+
+                // Override the click behavior only for our custom button.
+                $builder.on('click', '.uawpf-webhooks-add', function(e) {
+                    e.preventDefault();
+
+                    if (typeof app !== 'undefined' && typeof app.settingsBlockAdd === 'function') {
+                        app.settingsBlockAdd($(this));
+                    } else if (typeof WPForms !== 'undefined' && WPForms.Admin?.Builder?.app?.settingsBlockAdd) {
+                        WPForms.Admin.Builder.app.settingsBlockAdd($(this));
+                    } else {
+                        console.warn('settingsBlockAdd not found — check WPForms builder context.');
+                    }
+                });
+            });
+
         },
 
-        /**
-         * Register JS events.
-         */
-        events() {
+        bindEvents() {
             $('#wpforms-builder')
-                .on('wpformsSaved', app.requiredFields.init)
-                .on('wpformsSettingsBlockAdded', app.webhookBlockAdded)
-                .on('wpformsFieldMapTableAddedRow', app.fieldMapTableAddRow)
-                .on('change', '#wpforms-panel-field-settings-uawpf-webhooks_enable', app.webhooksToggle)
-                .on('input', '.wpforms-field-map-table .http-key-source', app.updateNameAttr);
+                .on('wpformsSaved', this.requiredFields.init)
+                .on('wpformsSettingsBlockAdded', this.handleBlockAdded)
+                .on('wpformsFieldMapTableAddedRow', this.handleRowAdded)
+                .on('change', '#wpforms-panel-field-settings-uawpf-webhooks_enable', this.toggleWebhooks)
+                .on('input', '.wpforms-field-map-table .http-key-source', this.updateFieldNames);
 
-            app.$holder
-                .on('change', '.wpforms-field-map-table .wpforms-field-map-select', app.changeSourceSelect)
-                .on('click', '.wpforms-field-map-table .wpforms-field-map-custom-value-close', app.closeCustomValue)
-                .on('click keydown', '.wpforms-field-map-table .wpforms-field-map-is-secure.disabled input', app.returnFalseHandler);
+            this.$holder
+                .on('change', '.wpforms-field-map-table .wpforms-field-map-select', this.handleSourceChange)
+                .on('click', '.wpforms-field-map-table .wpforms-field-map-custom-value-close', this.closeCustomValue)
+                .on('click keydown', '.wpforms-field-map-table .wpforms-field-map-is-secure.disabled input', this.preventAction);
         },
 
-        /**
-         * Reset fields when adding a new webhook block.
-         */
-        webhookBlockAdded(event, $block) {
-            if (!$block.length || $block.data('block-type') !== 'uawpf-webhook') return;
-            $block.find('.wpforms-field-map-table .wpforms-field-map-custom-value-close').trigger('click');
+        handleBlockAdded(event, $block) {
+            if ($block?.data('block-type') !== 'uawpf-webhook') return;
+            $block.find('.wpforms-field-map-custom-value-close').trigger('click');
         },
 
-        /**
-         * Reset fields when adding a new table row for mapping.
-         */
-        fieldMapTableAddRow(event, $block, $choice) {
-            if (!$block.length || $block.data('block-type') !== 'uawpf-webhook' || !$choice.length) return;
-
+        handleRowAdded(event, $block, $choice) {
+            if ($block?.data('block-type') !== 'uawpf-webhook' || !$choice.length) return;
             $choice.find('.wpforms-field-map-is-secure-checkbox').val('1');
             $choice.find('.wpforms-field-map-custom-value-close').trigger('click');
         },
 
-        /**
-         * Toggle webhook settings visibility.
-         */
-        webhooksToggle() {
+        toggleWebhooks() {
             app.$holder
                 .find('.wpforms-builder-settings-block-uawpf-webhook, .uawpf-webhooks-add')
                 .toggleClass('hidden', !$(this).is(':checked'));
         },
 
-        /**
-         * Update key source names in field map table.
-         */
-        updateNameAttr() {
-            const $this = $(this),
-                  value = $this.val();
-
-            if (value === undefined || value === null) return;
-
-            const $row = $this.closest('tr');
-            let $targets = $row.find('.wpforms-field-map-select');
-            const name = $targets.data('name');
+        updateFieldNames() {
+            const $row = $(this).closest('tr');
+            let $fields = $row.find('.wpforms-field-map-select');
+            const name = $fields.data('name');
 
             if ($row.find('td.field').hasClass('field-is-custom-value')) {
-                $targets = $row.find('.wpforms-field-map-custom-value, .wpforms-field-map-is-secure-checkbox');
+                $fields = $row.find('.wpforms-field-map-custom-value, .wpforms-field-map-is-secure-checkbox');
             }
 
-            $targets.each((idx, field) => {
-                const newName = name + $(field).data('suffix');
-                $(field).attr('name', newName.replace('{source}', value.replace(/[^a-zA-Z0-9._-]/g, '')));
+            const cleanVal = $(this).val()?.replace(/[^a-zA-Z0-9._-]/g, '') || '';
+            $fields.each((_, field) => {
+                const suffix = $(field).data('suffix');
+                $(field).attr('name', name + suffix.replace('{source}', cleanVal));
             });
         },
 
-        /**
-         * Handle "Add Custom Value" source selection.
-         */
-        changeSourceSelect() {
-            const $row = $(this).closest('tr'),
-                  isCustomValue = this.value === 'custom_value';
+        handleSourceChange() {
+            const $row = $(this).closest('tr');
+            const isCustom = this.value === 'custom_value';
 
-            if (isCustomValue) {
+            if (isCustom) {
                 $(this).attr('name', '');
-                $row.find('td.field').toggleClass('field-is-custom-value', true);
+                $row.find('td.field').addClass('field-is-custom-value');
                 $row.find('.http-key-source').trigger('input');
             }
         },
 
-        /**
-         * Close "Custom Value" field.
-         */
         closeCustomValue(event) {
             event.preventDefault();
-
             const $row = $(this).closest('tr');
+
             $row.find('td.field').removeClass('field-is-custom-value');
             $row.find('.wpforms-field-map-select').prop('selectedIndex', 0);
             $row.find('.wpforms-field-map-is-secure').removeClass('disabled');
             $row.find('.wpforms-field-map-is-secure-checkbox').attr('name', '').prop('checked', false);
             $row.find('.wpforms-field-map-custom-value').attr('name', '').prop('readonly', false).val('');
             $row.find('.insert-smart-tag-dropdown').addClass('closed');
-            WPForms.Admin.Builder.SmartTags.reinitWidgets($row);
+
+            if (WPForms?.Admin?.Builder?.SmartTags) {
+                WPForms.Admin.Builder.SmartTags.reinitWidgets($row);
+            }
         },
 
-        /**
-         * Prevent click/keydown on disabled inputs.
-         */
-        returnFalseHandler() {
+        preventAction() {
             return false;
         },
 
-        /**
-         * Required fields validation logic.
-         */
         requiredFields: {
             hasErrors: false,
-            isNotified: false,
+            alertShowed: false,
 
             init() {
                 const $blocks = app.$holder.find('.wpforms-builder-settings-block-uawpf-webhook');
                 if (!$blocks.length || $blocks.hasClass('hidden')) return;
 
-                app.requiredFields.isNotified = false;
-                $blocks.each(app.requiredFields.check);
+                this.alertShowed = false;
+                $blocks.each(this.check);
             },
 
             check() {
                 app.requiredFields.hasErrors = false;
 
                 $(this).find('input.wpforms-required, select.wpforms-required').each(function () {
-                    const $field = $(this),
-                          value = $field.val();
+                    const $field = $(this);
+                    const value = $field.val();
 
                     if (_.isEmpty(value) || ($field.hasClass('wpforms-required-url') && !wpf.isURL(value))) {
                         $field.addClass('wpforms-error');
@@ -154,33 +145,35 @@ const UAWPFWebhooks = window.UAWPFWebhooks || (function (document, window, $) {
                     }
                 });
 
-                app.requiredFields.notify();
+                app.requiredFields.showAlert();
             },
 
-            notify() {
-                if (app.requiredFields.hasErrors && !app.requiredFields.isNotified) {
-                    $.alert({
-                        title: wpforms_builder.heads_up,
-                        content: wpforms_builder.webhook_required_flds,
-                        icon: 'fa fa-exclamation-circle',
-                        type: 'orange',
-                        buttons: {
-                            confirm: {
-                                text: wpforms_builder.ok,
-                                btnClass: 'btn-confirm',
-                                keys: ['enter']
-                            }
-                        }
-                    });
+            showAlert() {
+                if (!this.hasErrors || this.alertShowed) return;
 
-                    app.requiredFields.isNotified = true;
-                }
+                $.alert({
+                    title: wpforms_builder.heads_up,
+                    content: wpforms_builder.uawpf_webhook_required_flds,
+                    icon: 'fa fa-exclamation-circle',
+                    type: 'orange',
+                    buttons: {
+                        confirm: {
+                            text: wpforms_builder.ok,
+                            btnClass: 'btn-confirm',
+                            keys: ['enter']
+                        }
+                    }
+                });
+
+                this.alertShowed = true;
             }
         }
     };
 
     return app;
-
 })(document, window, jQuery);
 
-UAWPFWebhooks.init();
+WebhooksManager.init();
+
+
+

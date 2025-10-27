@@ -1,8 +1,6 @@
 <?php
 /**
- * Webhook settings block.
- *
- * @var array $args
+ * Render a single webhook settings block.
  */
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
