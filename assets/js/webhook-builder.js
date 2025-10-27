@@ -97,7 +97,7 @@ const UAWPFWebhooks = window.UAWPFWebhooks || (function (document, window, $) {
             if (isCustomValue) {
                 $(this).attr('name', '');
                 $row.find('td.field').toggleClass('field-is-custom-value', true);
-                $row.find('.http-key-source').trigger('input.wpformsWebhooks');
+                $row.find('.http-key-source').trigger('input');
             }
         },
 
