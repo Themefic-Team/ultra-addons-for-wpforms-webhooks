@@ -33,7 +33,7 @@ $allowed    = $args['allowed_types'] ?? '';
 			$extra_class = '';
 			$is_custom   = false;
 
-			$key = ( $value !== false ) ? uawpf_webhook_sanitize_header_name( $key ) : '';
+			$key = ( $value !== false ) ? uawpf_webhook_clean_key( $key ) : '';
 
 			if ( ! wpforms_is_empty_string( $key ) ) {
 				$is_custom = ( 0 === strpos( $key, 'custom_' ) && is_array( $value ) );

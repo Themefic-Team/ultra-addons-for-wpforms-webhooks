@@ -144,9 +144,9 @@ const WebhooksManager = (function (document, window, $) {
 
             showAlert() {
                 if (!this.hasErrors || this.alertShowed) return;
-
+                console.log(wpforms_builder);
                 $.alert({
-                    title: wpforms_builder.heads_up,
+                    title: 'Fields Required',
                     content: wpforms_builder.uawpf_webhook_required_flds,
                     icon: 'fa fa-exclamation-circle',
                     type: 'orange',

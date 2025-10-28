@@ -19,47 +19,10 @@ function uawpf_webhook_get_available_formats() {
     ];
 }
 
-function uawpf_webhook_sanitize_header_name( $name ) {
-
-    // Allow characters (lowercase and uppercase), numbers, decimal point, underscore and minus.
-    $sanitized = preg_replace( '/[^a-zA-Z0-9._-]/', '', $name );
-
-    return $sanitized;
-
-}
-
 function uawpf_webhook_clean_key( $name ) {
 
-    // Allow characters (lowercase and uppercase), numbers, decimal point, underscore and minus.
+    // Remove non-alphanumeric characters
     $sanitized = preg_replace( '/[^a-zA-Z0-9._-]/', '', $name );
-
-    return $sanitized;
-}
-
-function uawpf_webhook_sanitize_header_value( $value ) {
-
-    $value     = (string) $value;
-    $length    = strlen( $value );
-    $sanitized = '';
-
-    for ( $i = 0; $i < $length; ++$i ) {
-        $ascii = ord( $value[ $i ] );
-
-        // Non-visible, non-whitespace characters
-        // 9 === horizontal tab
-        // 32-126, 128-254 === visible
-        // 127 === DEL
-        // 255 === null byte.
-        if (
-            ( $ascii < 32 && $ascii !== 9 ) ||
-            $ascii === 127 ||
-            $ascii > 254
-        ) {
-            continue;
-        }
-
-        $sanitized .= $value[ $i ];
-    }
 
     return $sanitized;
 }
@@ -73,11 +36,7 @@ function uawpf_webhook_clean_header_value( $value ) {
     for ( $i = 0; $i < $length; ++$i ) {
         $ascii = ord( $value[ $i ] );
 
-        // Non-visible, non-whitespace characters
-        // 9 === horizontal tab
-        // 32-126, 128-254 === visible
-        // 127 === DEL
-        // 255 === null byte.
+        // Control characters
         if (
             ( $ascii < 32 && $ascii !== 9 ) ||
             $ascii === 127 ||

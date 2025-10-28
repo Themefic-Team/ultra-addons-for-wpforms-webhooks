@@ -259,12 +259,12 @@ class FormBuilderUI {
 
     public function inject_builder_strings( $strings, $form ) {
 
-		$strings['uawpf-webhook_prompt']        = esc_html__( 'Enter a webhook name', 'wpforms-webhooks' );
+		$strings['uawpf-webhook_prompt']        = esc_html__( 'Provide a webhook name', 'ultrawpf-webhooks' );
 		$strings['uawpf-webhook_ph']            = '';
-		$strings['uawpf-webhook_error']         = esc_html__( 'You must provide a webhook name', 'wpforms-webhooks' );
-		$strings['uawpf-webhook_delete']        = esc_html__( 'Are you sure that you want to delete this webhook?', 'wpforms-webhooks' );
-		$strings['uawpf-webhook_def_name']      = esc_html__( 'Unnamed Webhook', 'wpforms-webhooks' );
-		$strings['uawpf_webhook_required_flds'] = esc_html__( 'Your form contains required Webhook settings that have not been configured. Please double-check and configure these settings to complete the connection setup.', 'wpforms-webhooks' );
+		$strings['uawpf-webhook_error']         = esc_html__( 'You must provide a webhook name to continue', 'ultrawpf-webhooks' );
+		$strings['uawpf-webhook_delete']        = esc_html__( 'Are you sure to delete this webhook?', 'ultrawpf-webhooks' );
+		$strings['uawpf-webhook_def_name']      = esc_html__( 'Uawpf Webhook', 'ultrawpf-webhooks' );
+		$strings['uawpf_webhook_required_flds'] = esc_html__( 'Please configure the required webhook settings.', 'ultrawpf-webhooks' );
 
 		return $strings;
 	}

@@ -120,7 +120,7 @@ class WebhookProcessor {
 				$value   = isset($this->fields[$val]) ? $this->fields[$val]['value'] : '';
 			}
 
-			$value = uawpf_webhook_sanitize_header_value($value);
+			$value = uawpf_webhook_clean_header_value($value);
 
 			if ($value !== '') {
 				$result[$new_key] = $value;
