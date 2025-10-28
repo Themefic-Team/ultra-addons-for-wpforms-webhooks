@@ -25,7 +25,7 @@ class WebhookProcessor {
 		) {
 			return;
 		}
-		uawpf_print_r($entry);
+		
 		$this->fields    = $fields;
 		$this->entry     = $entry;
 		$this->form_data = $form_data;

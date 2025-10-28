@@ -9,7 +9,6 @@ final class WebhookAddon {
     
 	private static $instance = null;
 	public $settings_manager;
-	public $processor;
 
 	/**
 	 * Get singleton instance.
@@ -45,8 +44,8 @@ final class WebhookAddon {
 			$this->settings_manager->init();
 		}
 
-		$this->processor = new WebhookProcessor();
-		$this->processor->init();
+		$WebhookProcessor = new WebhookProcessor();
+		$WebhookProcessor->init();
 	}
 
 	/**
