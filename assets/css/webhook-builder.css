@@ -18,11 +18,6 @@
     right: 40px;
 }
 
-/* #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-table td.key {
-  max-width: 40%;
-  width: 40%;
-} */
-
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-builder-settings-block-content input, 
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-builder-settings-block-content select {
   height: 40px;
@@ -35,11 +30,6 @@
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-builder-settings-block-content .wpforms-field-map-table .actions .add {
   color: #007A77;
 }
-
-/* #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-table td.field {
-  max-width: calc( 100% - 40% - 50px);
-  width: calc( 100% - 40% - 50px);
-} */
 
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook select.uawpf-field-map-select {
   height: 40px;
@@ -58,13 +48,6 @@
 #wpforms-panel-settings .wpforms-panel-content-section-uawpf-webhooks .wpforms-builder-settings-block {
 	border: 1px solid #007A77;
 }
-
-/* #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-wrap {
-  display: flex;
-  flex-wrap: nowrap;
-  align-content: center;
-  align-items: center;
-} */
 
 #wpforms-panel-settings .wpforms-builder-settings-block-uawpf-webhook .wpforms-field-map-wrap-l {
   max-width: 100%;
@@ -318,5 +301,7 @@ td.field.uawpf-field-is-custom-value .uawpf-field-map-custom-wrap {
     border: none;
     background: none;
     color: #007A77;
+    position: absolute;
+    right: 32px;
 }
 

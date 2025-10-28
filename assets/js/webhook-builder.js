@@ -60,7 +60,6 @@ const WebhooksManager = (function (document, window, $) {
 
         handleRowAdded(event, $block, $choice) {
             if ($block?.data('block-type') !== 'uawpf-webhook' || !$choice.length) return;
-            $choice.find('.uawpf-field-map-is-secure-checkbox').val('1');
             $choice.find('.uawpf-field-map-custom-value-close').trigger('click');
         },
 
