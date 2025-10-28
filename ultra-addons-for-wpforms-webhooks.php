@@ -36,6 +36,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 
         $this->define_constants();
 
+        add_action( 'init', array( $this, 'load_textdomain' ) );
         add_action('init', array( $this , 'ultrawpf_webhooks_plugin_init') );
 		add_action( 'wpforms_loaded', array($this, 'ultrawpf_webhooks_load') );
     }
@@ -85,6 +86,15 @@ final class Ultra_Addons_For_WPForms_Webhooks {
             add_action( 'admin_notices', array($this, 'ultrawpf_webhooks_addon_required') );
         }
     }
+
+    public function load_textdomain() {
+        load_plugin_textdomain(
+            'ultrawpf-webhooks',
+            false,
+            dirname(plugin_basename(__FILE__)) . '/languages/'
+        );
+    }
+
 
     public function ultrawpf_webhooks_admin_scripts($screen) {
 

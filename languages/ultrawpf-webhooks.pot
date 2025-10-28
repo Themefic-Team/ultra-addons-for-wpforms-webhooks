@@ -1,0 +1,147 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultra Addons For WPForms Webhooks\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-28 08:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.3; php-8.2.23\n"
+"X-Domain: ultrawpf-webhooks"
+
+#: render/repeater-fields.php:63
+msgid "--- Select Field ---"
+msgstr ""
+
+#: render/repeater-fields.php:79
+msgid "Add Custom Value"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:38
+msgid "Add New Webhook"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:265
+msgid "Are you sure to delete this webhook?"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:164
+msgid "Choose the HTTP method for this webhook."
+msgstr ""
+
+#: render/repeater-fields.php:86
+msgid "Custom Value"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:62
+msgid "Enable Ultra Addons Webhooks"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:140
+msgid "Endpoint Request URL"
+msgstr ""
+
+#: render/repeater-fields.php:57
+msgid "Enter a parameter key&hellip;"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:146
+msgid "Enter the webhook endpoint URL…"
+msgstr ""
+
+#. %d - field ID.
+#: render/repeater-fields.php:70
+msgid "Field #%d"
+msgstr ""
+
+#: includes/Helpers/functions.php:18
+msgid "FORM"
+msgstr ""
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://themefic.com"
+msgstr ""
+
+#. Description of the plugin
+msgid "Integrate WPForms with other external API that support them ."
+msgstr ""
+
+#: includes/Helpers/functions.php:17
+msgid "JSON"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:267
+msgid "Please configure the required webhook settings."
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:262
+msgid "Provide a webhook name"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:203
+msgid "Request Body"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:190
+msgid "Request Headers"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:175
+msgid "Select Request Format"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:158
+msgid "Select Request Method"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:181
+msgid "Select the format of the request payload."
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:147
+msgid "Specify the endpoint URL to send webhook requests."
+msgstr ""
+
+#: ultra-addons-for-wpforms-webhooks.php:110
+msgid "to be installed and active."
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:266
+msgid "Uawpf Webhook"
+msgstr ""
+
+#. Name of the plugin
+msgid "Ultra Addons For WPForms Webhooks"
+msgstr ""
+
+#: ultra-addons-for-wpforms-webhooks.php:108
+msgid "Ultra Addons For WPForms Webhooks requires"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:33
+msgid "Ultra Addons Webhooks"
+msgstr ""
+
+#: includes/WebhookProcessor.php:216
+msgid "Webhook delivery failed (Entry #%d)"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:235
+msgid "Webhooks"
+msgstr ""
+
+#. Author of the plugin
+msgid "WPForms"
+msgstr ""
+
+#: includes/Settings/FormBuilderUI.php:264
+msgid "You must provide a webhook name to continue"
+msgstr ""
