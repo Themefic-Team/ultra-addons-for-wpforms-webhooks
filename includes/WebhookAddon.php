@@ -8,8 +8,6 @@ use Themefic\UtrawpfWebhooks\Settings\SettingsManager;
 final class WebhookAddon {
     
 	private static $instance = null;
-
-	public $builder_ui;
 	public $settings_manager;
 	public $processor;
 
@@ -40,10 +38,10 @@ final class WebhookAddon {
 	public function register_components() {
 
 		if ( wpforms_is_admin_page( 'builder' ) || wp_doing_ajax() ) {
-			$this->builder_ui      = new FormBuilderUI();
+			$builder_ui             = new FormBuilderUI();
 			$this->settings_manager = new SettingsManager();
 
-			$this->builder_ui->init();
+			$builder_ui->init();
 			$this->settings_manager->init();
 		}
 

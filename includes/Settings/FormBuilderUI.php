@@ -25,21 +25,28 @@ class FormBuilderUI {
 		
 		WebhookAddon::instance()->settings_manager->set_context( $builder_panel_settings );
 		$webhooks = WebhookAddon::instance()->settings_manager->get_prop( 'webhooks' );
+		$next_id = max( array_keys( $webhooks ) ) + 1;
 
-		echo wpforms_render(
-			ULTRAWPF_WEBHOOKS_PATH . 'render/section',
-			[
-				'next_id'             => max( array_keys( $webhooks ) ) + 1,
-				'enable_control_html' => $this->render_enable_toggle(),
-				'webhooks_html'       => $this->render_webhooks_html(),
-				'add_new_btn_classes' => $this->compose_classnames(
-					[
-						'wpforms-builder-settings-block-add',
-						'uawpf-webhooks-add',
-					]
-				),
-			]
-		);
+		?>
+			<div class="wpforms-panel-content-section wpforms-panel-content-section-uawpf-webhooks">
+				<div class="wpforms-panel-content-section-title">
+					<?php esc_html_e( 'Ultra Addons Webhooks', 'ultrawpf-webhooks' ); ?>
+					<button type="button"
+						class="wpforms-builder-settings-block-add uawpf-webhooks-add wpforms-uawpf-webooks-add"
+						data-block-type="uawpf-webhook"
+						data-next-id="<?php echo absint( $next_id ); ?>">
+						<?php esc_html_e( 'Add New Webhook', 'ultrawpf-webhooks' ); ?>
+					</button>
+				</div>
+
+				<?php
+					// Keep original output. CSS expects WPForms classes.
+					echo $this->render_enable_toggle();
+					echo $this->render_webhooks_html();
+				?>
+			</div>
+		<?php
+
 	}
 
 	/**
