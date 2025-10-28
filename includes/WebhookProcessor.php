@@ -2,7 +2,6 @@
 namespace Themefic\UtrawpfWebhooks;
 
 use WPForms\Tasks\Meta;
-use WPForms\Helpers\Crypto;
 
 class WebhookProcessor {
 
@@ -25,7 +24,7 @@ class WebhookProcessor {
 		) {
 			return;
 		}
-		
+
 		$this->fields    = $fields;
 		$this->entry     = $entry;
 		$this->form_data = $form_data;
@@ -71,7 +70,7 @@ class WebhookProcessor {
 
 		$request_args = [
 			'method'      => $method,
-			'timeout'     => 60,
+			'timeout'     => 30,
 			'redirection' => 0,
 			'httpversion' => '1.0',
 			'blocking'    => true,
@@ -114,7 +113,7 @@ class WebhookProcessor {
 		foreach ((array) $params as $key => $val) {
 			if (is_array($val) && strpos($key, 'custom_') === 0) {
 				$new_key = substr($key, 7);
-				$decoded = !empty($val['secure']) ? Crypto::decrypt($val['value']) : $val['value'];
+				$decoded = $val['value'];
 				$value   = wpforms_process_smart_tags($decoded, $this->form_data, $this->fields, $this->entry_id, 'uawpf-headers');
 			} else {
 				$new_key = $key;
@@ -140,7 +139,7 @@ class WebhookProcessor {
 		foreach ((array) $params as $key => $val) {
 			if (is_array($val) && strpos($key, 'custom_') === 0) {
 				$new_key = substr($key, 7);
-				$decoded = !empty($val['secure']) ? Crypto::decrypt($val['value']) : $val['value'];
+				$decoded = $val['value'];
 				$value   = wpforms_process_smart_tags($decoded, $this->form_data, $this->fields, $this->entry_id, 'uawpf-body');
 			} else {
 				$new_key = $key;

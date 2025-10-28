@@ -29,7 +29,6 @@ $allowed    = $args['allowed_types'] ?? '';
 			$flds_name   = [
 				'source' => '',
 				'custom' => '',
-				'secure' => '',
 			];
 			$extra_class = '';
 			$is_custom   = false;
@@ -40,11 +39,10 @@ $allowed    = $args['allowed_types'] ?? '';
 				$is_custom = ( 0 === strpos( $key, 'custom_' ) && is_array( $value ) );
 
 				if ( $is_custom ) {
+
 					$key                 = substr_replace( $key, '', 0, 7 );
-					// decrypt only if Crypto available
-					$value['value']      = ( ! empty( $value['secure'] ) && class_exists( '\WPForms\Helpers\Crypto' ) ) ? Crypto::decrypt( $value['value'] ) : $value['value'];
+					$value['value']      = $value['value'];
 					$flds_name['custom'] = sprintf( '%1$s[custom_%2$s][value]', $args['name'], $key );
-					$flds_name['secure'] = sprintf( '%1$s[custom_%2$s][secure]', $args['name'], $key );
 
 					$extra_class = ' uawpf-field-is-custom-value';
 
@@ -53,7 +51,6 @@ $allowed    = $args['allowed_types'] ?? '';
 				}
 			}
 
-			$is_secure_checked = $is_custom && $value['value'] !== false && ! empty( $value['secure'] );
 		?>
 			<tr>
 				<td class="key uawpf-field-map-key">
@@ -82,15 +79,12 @@ $allowed    = $args['allowed_types'] ?? '';
 								<option value="custom_value" class="wpforms-field-map-option-custom-value uawpf-field-map-option-custom-value"><?php esc_html_e( 'Add Custom Value', 'ultrawpf-webhooks' ); ?></option>
 							</select>
 							<div class="wpforms-field-map-custom-wrap uawpf-field-map-custom-wrap">
-								<label class="uawpf-field-map-is-secure uawpf-field-map-is-secure <?php echo $is_secure_checked ? 'disabled' : ''; ?>">
-									<input class="uawpf-field-map-is-secure-checkbox uawpf-field-map-is-secure-checkbox" name="<?php echo esc_attr( $flds_name['secure'] ); ?>" data-suffix="[custom_{source}][secure]" type="checkbox" value="1" <?php checked( $is_secure_checked ); ?> autocomplete="off">
-								</label>
 								<input class="uawpf-field-map-custom-value wpforms-smart-tags-enabled uawpf-field-map-custom-value"
 									name="<?php echo esc_attr( $flds_name['custom'] ); ?>"
 									data-suffix="[custom_{source}][value]" type="text"
 									data-type="other"
 									placeholder="<?php esc_html_e( 'Custom Value', 'ultrawpf-webhooks' ); ?>"
-									value="<?php echo esc_attr( $is_custom ? $value['value'] : '' ); ?>" <?php wpforms_readonly( $is_secure_checked ); ?>>
+									value="<?php echo esc_attr( $is_custom ? $value['value'] : '' ); ?>">
 								<a href="#" class="uawpf-field-map-custom-value-close uawpf-field-map-custom-value-close fa fa-close"></a>
 							</div>
 						</div>
