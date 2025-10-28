@@ -127,7 +127,9 @@ const WebhooksManager = (function (document, window, $) {
                 if (!$blocks.length || $blocks.hasClass('hidden')) return;
 
                 this.alertShowed = false;
-                $blocks.each(this.check);
+                $blocks.each(function() {
+                    app.requiredFields.check.call(this);
+                });
             },
 
             check() {
