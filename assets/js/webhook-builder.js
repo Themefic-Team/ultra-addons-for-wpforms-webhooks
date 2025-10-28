@@ -28,15 +28,13 @@ const WebhooksManager = (function (document, window, $) {
                 $builder.on('click', '.uawpf-webhooks-add', function(e) {
                     e.preventDefault();
 
-                    if (typeof WPForms !== 'undefined' && WPForms.Admin?.Builder?.app?.settingsBlockAdd && wpforms_builder.pro) {
+                    if (typeof app !== 'undefined' && typeof app.settingsBlockAdd === 'function') {
+                        app.settingsBlockAdd($(this));
+                    } else if (typeof WPForms !== 'undefined' && WPForms.Admin?.Builder?.app?.settingsBlockAdd) {
                         WPForms.Admin.Builder.app.settingsBlockAdd($(this));
-                    } else if (typeof app.settingsBlockAdd === 'function') {
-                        app.settingsBlockAdd($(this)); // Our fallback for WPForms Lite
                     } else {
                         console.warn('settingsBlockAdd not found — check WPForms builder context.');
                     }
-
-
                 });
             });
 
@@ -111,50 +109,6 @@ const WebhooksManager = (function (document, window, $) {
                 WPForms.Admin.Builder.SmartTags.reinitWidgets($row);
             }
         },
-
-        settingsBlockAdd($el) {
-            const nextID = Number($el.attr('data-next-id'));
-            const $section = $el.closest('.wpforms-panel-content-section');
-            const blockType = 'uawpf-webhook';
-
-            // Ask user for name
-            const name = prompt('Enter a name for your new Webhook connection:', '');
-            if (!name) return;
-
-            // Clone the first existing block or use template
-            const $firstBlock = $section.find('.wpforms-builder-settings-block-uawpf-webhook').first();
-            let $newBlock;
-
-            if ($firstBlock.length) {
-                $newBlock = $firstBlock.clone();
-            } else {
-                const template = $('#wpforms-uawpf-webhook-template-block').text();
-                $newBlock = $(template.replace(/{CLONE}/g, nextID).replace(/CLONE/g, nextID));
-            }
-
-            // Reset fields
-            $newBlock.find('input, textarea, select').each(function() {
-                const $field = $(this);
-                $field.val('').removeClass('wpforms-error');
-            });
-
-            $newBlock.attr('data-block-id', nextID);
-            $newBlock.find('.wpforms-builder-settings-block-name-holder span').text(name);
-
-            // Insert new block before first one or append if none
-            if ($firstBlock.length) {
-                $firstBlock.before($newBlock);
-            } else {
-                $section.find('.uawpf-webhooks-add').before($newBlock);
-            }
-
-            // Increment ID
-            $el.attr('data-next-id', nextID + 1);
-
-            // Trigger hook for consistency
-            $('#wpforms-builder').trigger('wpformsSettingsBlockAdded', [$newBlock]);
-        },
-
 
         requiredFields: {
             hasErrors: false,
