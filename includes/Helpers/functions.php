@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * Addons - Ultra addons for wpforms webhooks
+ * @author Jewel Hossain
+ * @param $option
+ * @since 1.0.1
+ */
+if ( ! function_exists( 'ultrawpf_settings_options_webhooks' ) ) {
+	function ultrawpf_settings_options_webhooks( $option ) {
+        
+		// if ( apply_filters( 'ultrawf_checked_license_status', '' ) != false ) {
+
+			$option['general_addons']['fields']['uawpf_enable_webhook']['is_pro']         = false;
+
+		// }
+
+		return $option;
+	}
+	add_filter( 'ultrawpf_settings_options', 'ultrawpf_settings_options_webhooks', 16, 2 );
+}
+
 function uawpf_webhook_get_available_methods() {
 
     return [

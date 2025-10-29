@@ -30,12 +30,12 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 
 
 	const WEBHOOKS_VERSION = '1.0.0';
-
+    private $option;
     public function __construct()
     {
 
         $this->define_constants();
-
+        $this->option = get_option( 'ultrawpf_settings' );
         add_action( 'init', array( $this, 'load_textdomain' ) );
         add_action('init', array( $this , 'ultrawpf_webhooks_plugin_init') );
 		add_action( 'wpforms_loaded', array($this, 'ultrawpf_webhooks_load') );
@@ -103,8 +103,11 @@ final class Ultra_Addons_For_WPForms_Webhooks {
     }
 
 	public function ultrawpf_webhooks_load() {
-		
-		return WebhookAddon::instance();
+
+        if ( isset( $this->option['uawpf_enable_webhook'] ) && $this->option['uawpf_enable_webhook'] == true ) {
+
+		    return WebhookAddon::instance();
+        }
 	}
     
     /*
