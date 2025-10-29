@@ -9,15 +9,19 @@
 if ( ! function_exists( 'ultrawpf_settings_options_webhooks' ) ) {
 	function ultrawpf_settings_options_webhooks( $option ) {
         
-		// if ( apply_filters( 'ultrawf_checked_license_status', '' ) != false ) {
+		if ( apply_filters( 'ultrawpf_checked_license_status', '' ) != false ) {
 
-			$option['general_addons']['fields']['uawpf_enable_webhook']['is_pro']         = false;
+			$option['general_addons']['fields']['uawpf_enable_webhook']['is_pro']  = false;
 
-		// }
+		}
 
 		return $option;
 	}
 	add_filter( 'ultrawpf_settings_options', 'ultrawpf_settings_options_webhooks', 16, 2 );
+}
+
+function uawpf_is_actived() {
+    return apply_filters( 'ultrawpf_checked_license_status', '' ) !== false;
 }
 
 function uawpf_webhook_get_available_methods() {

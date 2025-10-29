@@ -80,7 +80,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 
         if ( is_plugin_active( 'ultra-addons-for-wpforms/ultra-addons-for-wpforms.php' ) ) {
     
-            add_action( 'admin_enqueue_scripts', array($this ,'ultrawpf_webhooks_admin_scripts') );
+            add_action( 'admin_enqueue_scripts', array($this , 'ultrawpf_webhooks_admin_scripts' ) );
 			
         }else{
             add_action( 'admin_notices', array($this, 'ultrawpf_webhooks_addon_required') );
@@ -102,13 +102,17 @@ final class Ultra_Addons_For_WPForms_Webhooks {
         
     }
 
-	public function ultrawpf_webhooks_load() {
+    public function ultrawpf_webhooks_load() {
 
-        if ( isset( $this->option['uawpf_enable_webhook'] ) && $this->option['uawpf_enable_webhook'] == true ) {
+        $enabled = isset( $this->option['uawpf_enable_webhook'] ) && $this->option['uawpf_enable_webhook'] == true;
 
-		    return WebhookAddon::instance();
+        if ( $enabled ) {
+            return WebhookAddon::instance();
         }
-	}
+
+        return false;
+    }
+
     
     /*
     * Admin notice: Plugin installation error
