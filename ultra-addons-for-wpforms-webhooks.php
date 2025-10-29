@@ -123,7 +123,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
             <p>
 				<?php 
 					echo esc_html__( 'Ultra Addons For WPForms Webhooks requires', 'ultrawpf-webhooks' );
-					echo '<a href="https://themefic.com/plugins/ultrawpf/pro/" target="_blank"> Ultra Addons For WPForms Pro </a>';
+					echo '<a href="https://wpfaddons.com/pricing/" target="_blank"> Ultra Addons For WPForms </a>';
 					echo esc_html__( 'to be installed and active.', 'ultrawpf-webhooks' ); 
 				?>
             </p>
