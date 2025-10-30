@@ -9,15 +9,15 @@
 if ( ! function_exists( 'ultrawpf_settings_options_webhooks' ) ) {
 	function ultrawpf_settings_options_webhooks( $option ) {
         
-		if ( apply_filters( 'ultrawpf_checked_license_status', '' ) != false ) {
+		// if ( apply_filters( 'ultrawpf_checked_license_status', '' ) != false ) {
 
 			$option['general_addons']['fields']['uawpf_enable_webhook']['is_pro']  = false;
 
-		}else {
+		// }else {
 
-            // add_action( 'admin_notices', 'license_activation_notice' );
+        //     // add_action( 'admin_notices', 'license_activation_notice' );
 
-        }
+        // }
 
 		return $option;
 	}
