@@ -282,7 +282,7 @@ class FormBuilderUI {
 			'ultrawpf-webhooks-builder',
 			ULTRAWPF_WEBHOOKS_URL . "assets/js/webhook-builder.js",
 			[ 'wpforms-builder' ],
-			WEBHOOKS_VERSION,
+			ULTRAWPF_WEBHOOKS_VERSION,
 			true
 		);
 
@@ -290,7 +290,7 @@ class FormBuilderUI {
 			'ultrawpf-webhooks-builder',
 			ULTRAWPF_WEBHOOKS_URL . "assets/css/webhook-builder.css",
 			[ 'wpforms-builder' ],
-			WEBHOOKS_VERSION
+			ULTRAWPF_WEBHOOKS_VERSION
 		);
 	}
 

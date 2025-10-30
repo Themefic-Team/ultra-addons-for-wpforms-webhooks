@@ -13,15 +13,36 @@ if ( ! function_exists( 'ultrawpf_settings_options_webhooks' ) ) {
 
 			$option['general_addons']['fields']['uawpf_enable_webhook']['is_pro']  = false;
 
-		}
+		}else {
+
+            // add_action( 'admin_notices', 'license_activation_notice' );
+
+        }
 
 		return $option;
 	}
 	add_filter( 'ultrawpf_settings_options', 'ultrawpf_settings_options_webhooks', 16, 2 );
 }
 
-function uawpf_is_actived() {
-    return apply_filters( 'ultrawpf_checked_license_status', '' ) !== false;
+if(!function_exists('license_activation_notice')) {
+    function license_activation_notice() {
+
+        if ( apply_filters( 'ultrawpf_checked_license_status', '' ) == false ) {
+
+        ?>
+        
+        <div class="notice notice-error is-dismissible">
+            <p>
+				<?php 
+					echo esc_html__( 'Ultra Addons For WPForms Webhooks requires to ', 'ultrawpf-webhooks' );
+					echo '<a href="' . esc_url( admin_url('admin.php?page=ultrawpf_license_info') ) . '"> activate license. </a>'; 
+				?>
+            </p>
+        </div>
+
+        <?php
+        }
+    }
 }
 
 function uawpf_webhook_get_available_methods() {

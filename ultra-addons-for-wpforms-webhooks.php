@@ -25,11 +25,12 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 }
 
 use Themefic\UtrawpfWebhooks\WebhookAddon;
+use Themefic\UtrawpfWebhooks\UpdateChecker;
 
 final class Ultra_Addons_For_WPForms_Webhooks {
 
 
-	const WEBHOOKS_VERSION = '1.0.0';
+	const ULTRAWPF_WEBHOOKS_VERSION = '1.0.0';
     private $option;
     public function __construct()
     {
@@ -66,17 +67,17 @@ final class Ultra_Addons_For_WPForms_Webhooks {
 
 		define( 'ULTRAWPF_WEBHOOKS_PATH', plugin_dir_path( __FILE__ ) );
 		define( 'ULTRAWPF_WEBHOOKS_URL', plugin_dir_url( __FILE__ ) );
-		define( 'WEBHOOKS_VERSION', self::WEBHOOKS_VERSION );
-
+		define( 'ULTRAWPF_WEBHOOKS_VERSION', self::ULTRAWPF_WEBHOOKS_VERSION );
+        define( 'ULTRAWPF_WEBHOOKS_PLUGIN_BASENAME', plugin_basename( __DIR__ )  );
 
     }
 
     public function ultrawpf_webhooks_plugin_init() {
 
         //require plugin update checker file
-        // if( is_admin() ){
-        //     require_once ULTRAWPF_WEBHOOKS_PATH . 'includes/update-checker.php';
-        // }
+        if( is_admin() ){
+            new UpdateChecker();
+        }
 
         if ( is_plugin_active( 'ultra-addons-for-wpforms/ultra-addons-for-wpforms.php' ) ) {
     
@@ -123,7 +124,7 @@ final class Ultra_Addons_For_WPForms_Webhooks {
             <p>
 				<?php 
 					echo esc_html__( 'Ultra Addons For WPForms Webhooks requires', 'ultrawpf-webhooks' );
-					echo '<a href="https://wpfaddons.com/pricing/" target="_blank"> Ultra Addons For WPForms </a>';
+					echo '<a href="'. esc_url( admin_url( 'plugin-install.php?s=ultra-addons-for-wpforms&tab=search' ) ) .'" target="_blank"> Ultra Addons For WPForms </a>';
 					echo esc_html__( 'to be installed and active.', 'ultrawpf-webhooks' ); 
 				?>
             </p>
