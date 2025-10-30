@@ -21,29 +21,11 @@ const WebhooksManager = (function (document, window, $) {
         ready() {
             this.bindEvents();
 
-            jQuery(function($) {
-                const $builder = $('#wpforms-builder');
-
-                // Override the click behavior only for our custom button.
-                $builder.on('click', '.uawpf-webhooks-add', function(e) {
-                    e.preventDefault();
-
-                    if (typeof app !== 'undefined' && typeof app.settingsBlockAdd === 'function') {
-                        app.settingsBlockAdd($(this));
-                    } else if (typeof WPForms !== 'undefined' && WPForms.Admin?.Builder?.app?.settingsBlockAdd) {
-                        WPForms.Admin.Builder.app.settingsBlockAdd($(this));
-                    } else {
-                        console.warn('settingsBlockAdd not found — check WPForms builder context.');
-                    }
-                });
-            });
-
         },
 
         bindEvents() {
             $('#wpforms-builder')
                 .on('wpformsSaved', this.requiredFields.init)
-                .on('wpformsSettingsBlockAdded', this.handleBlockAdded)
                 .on('wpformsFieldMapTableAddedRow', this.handleRowAdded)
                 .on('change', '#wpforms-panel-field-settings-uawpf-webhooks_enable', this.toggleWebhooks)
                 .on('input', '.wpforms-field-map-table .http-key-source', this.updateFieldNames);
@@ -51,11 +33,6 @@ const WebhooksManager = (function (document, window, $) {
             this.$holder
                 .on('change', '.wpforms-field-map-table .uawpf-field-map-select', this.handleSourceChange)
                 .on('click', '.wpforms-field-map-table .uawpf-field-map-custom-value-close', this.closeCustomValue)
-        },
-
-        handleBlockAdded(event, $block) {
-            if ($block?.data('block-type') !== 'uawpf-webhook') return;
-            $block.find('.uawpf-field-map-custom-value-close').trigger('click');
         },
 
         handleRowAdded(event, $block, $choice) {
